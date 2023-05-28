@@ -19,6 +19,8 @@ public class RegisterAgentFactory {
      */
     private static Map<String, List<RegisterAgentInfo>> registerAgentListMap = new ConcurrentHashMap<>();
 
+    private static Map<String, String> contextAppNameMap = new ConcurrentHashMap<>();
+
     public static Set<String> getAppNameSet(){
         return registerAgentListMap.keySet();
     }
@@ -32,6 +34,7 @@ public class RegisterAgentFactory {
         registerAgentInfo.setCtx(ctx);
 
         String appName = registerAgentInfo.getAppName();
+        contextAppNameMap.put(ctx.toString(), appName);
         if(registerAgentListMap.containsKey(appName)){
             List<RegisterAgentInfo> registerAgentInfoList = registerAgentListMap.get(appName);
             boolean hasRegister = false;
@@ -52,6 +55,15 @@ public class RegisterAgentFactory {
         }
     }
 
+    public static void removeRegisterAgent(ChannelHandlerContext ctx){
+        if(!contextAppNameMap.containsKey(ctx.toString())){
+            return;
+        }
+        String appName = contextAppNameMap.get(ctx.toString());
+        List<RegisterAgentInfo> registerAgentInfoList = registerAgentListMap.get(appName);
+        registerAgentInfoList.removeIf(item -> item.getCtx() == ctx);
+        contextAppNameMap.remove(ctx.toString());
+    }
 
     public static RegisterAgentInfo getExecAgentInfo(String appName){
         if(!registerAgentListMap.containsKey(appName)){

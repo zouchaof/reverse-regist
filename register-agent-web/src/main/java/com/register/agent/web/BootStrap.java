@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 
 @Slf4j
-@SpringBootApplication(scanBasePackages={"com.register.agent"})
+@SpringBootApplication(scanBasePackages={"com.register.agent.web"})
 public class BootStrap implements CommandLineRunner {
 
     public static void main(String[] args) {

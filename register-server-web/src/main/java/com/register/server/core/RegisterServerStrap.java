@@ -37,9 +37,7 @@ public class RegisterServerStrap {
         EventLoopGroup eventLoopGroup2 = new NioEventLoopGroup(10);//工作线程池
         ServerBootstrap bootstrap = new ServerBootstrap();
         bootstrap.group(eventLoopGroup, eventLoopGroup2).channel(NioServerSocketChannel.class);
-        ChannelFuture future;
-        try {
-            future = bootstrap.childHandler(new ChannelInitializer<Channel>() {
+        bootstrap.childHandler(new ChannelInitializer<Channel>() {
 
                 @Override
                 protected void initChannel(Channel ch) throws Exception {
@@ -49,14 +47,6 @@ public class RegisterServerStrap {
                     ch.pipeline().addLast(new ContextInHandle());
                 }
             }).bind(registerServerPort);
-
-            future.channel().closeFuture().sync();
-        } catch (Exception e) {
-            log.error("netty error", e);
-        } finally {
-            eventLoopGroup.shutdownGracefully();
-            eventLoopGroup2.shutdownGracefully();
-        }
     }
 
 

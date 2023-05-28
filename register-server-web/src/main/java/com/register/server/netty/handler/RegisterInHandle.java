@@ -12,4 +12,17 @@ public class RegisterInHandle extends ServerInHandleAdapter<RegisterAgentInfo> {
     protected void serverRead(ChannelHandlerContext ctx, RegisterAgentInfo msg) {
         RegisterAgentFactory.registerAgent(ctx, msg);
     }
+
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        RegisterAgentFactory.removeRegisterAgent(ctx);
+        super.exceptionCaught(ctx, cause);
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        RegisterAgentFactory.removeRegisterAgent(ctx);
+        super.channelInactive(ctx);
+    }
 }
