@@ -3,11 +3,13 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>映射管理</title>
+    <title>注册信息</title>
     <link rel="stylesheet" href="/static/layui/css/layui.css">
 </head>
 <body>
+
 <#include "left.ftl">
+
 <div class="layui-container" style="margin-left: 210px;width: 80%">
 
     <div class="layui-progress" style="margin: 15px 0 30px;">
@@ -103,8 +105,9 @@
         var table = layui.table;
         var form = layui.form;
         var $ = layui.jquery;
+        var element = layui.element;
 
-        $("#home-tab").addClass("layui-this");
+        $("#register-tab").addClass("layui-this");
 
         table.render({
             elem: '#app-table',

@@ -26,14 +26,30 @@ public class ManageController {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @GetMapping("/home")
-    public String index(Model model) {
-//        ModelAndView mv = new ModelAndView("hello");
-//        mv.addObject("title", "Hello");
-//        mv.addObject("message", "Hello, World!");
-//        model.addAttribute("title", "Hello");
+    @GetMapping("/register")
+    public String register(Model model) {
         model.addAttribute("appNameSet", RegisterAgentFactory.getAppNameSet());
+        return "register";
+    }
 
+    @ResponseBody
+    @RequestMapping("getRegisterAgentInfo")
+    public Result getRegisterAgentInfo(String appName){
+
+
+
+
+//        List<Map<String, Object>>
+//        registerAgentListMap
+
+//        return RegisterAgentFactory.getAppNameSet();
+        return null;
+    }
+
+
+    @GetMapping("/home")
+    public String home(Model model) {
+        model.addAttribute("appNameSet", RegisterAgentFactory.getAppNameSet());
         return "home";
     }
 

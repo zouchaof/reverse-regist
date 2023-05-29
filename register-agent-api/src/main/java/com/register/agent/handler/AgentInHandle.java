@@ -21,11 +21,9 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class AgentInHandle extends ChannelInboundHandlerAdapter {
 
-    private static final long AGENT_CLIENT_ID = IdWork.getId();
     private static final ThreadPoolExecutor executor = new ThreadPoolExecutor(10, 10, 0L, TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>(99999));
 
-    private static int a = 0;
     /**
      * Calls {@link ChannelHandlerContext#fireChannelRead(Object)} to forward
      * to the next {@link ChannelInboundHandler} in the {@link ChannelPipeline}.
@@ -64,12 +62,8 @@ public class AgentInHandle extends ChannelInboundHandlerAdapter {
     }
 
     private RegisterAgentInfo getAgentInfo(){
-        RegisterAgentInfo agentInfo = new RegisterAgentInfo();
-        agentInfo.setReqId(AGENT_CLIENT_ID);
-        agentInfo.setAppName("agent");
-        agentInfo.setPath("/agent");
+        RegisterAgentInfo agentInfo = SpringApplicationContextHolder.getBean(RegisterAgentInfo.class);
         agentInfo.setLastRegisterTime(LocalDateTime.now());
-        agentInfo.setServerHost("http://localhost:81");
         return agentInfo;
     }
 
