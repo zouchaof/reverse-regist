@@ -110,7 +110,8 @@
             elem: '#app-table',
             url: '/rv-manage/select', // 此处为静态模拟数据，实际使用时需换成真实接口
             cols: [[
-                {field:'ID', title: 'ID', width:80, align:'center'},
+                {field:'ID', hide:true},
+                {type:'numbers', title: '序号', width:80, align:'center'},
                 {field:'APP_NAME', title: '应用名称', width:100, align:'center'},
                 {field:'MAPPING_PATH', title: '路由路径', width:280, align:'center'},
                 {field:'SERVER_PATH', title: '服务地址', align:'center'},
@@ -153,7 +154,40 @@
 
             console.log(data.ID);
             if(layEvent === 'edit'){
-                layer.msg('编辑操作');
+                var index = layer.open({
+                    type: 1,
+                    area: ['580px', '330px'],
+                    title: '编辑映射',
+                    btn: ['确定', '取消'],
+                    shadeClose: false,
+                    content: $("#addContent").html(),
+                    success:function(layero, index) {
+                        layui.use(function() {
+                            layui.form.render('select');
+                            $("#addAppName").val(data.APP_NAME);
+                            $("#addMappingPath").val(data.MAPPING_PATH);
+                            $("#addServerPath").val(data.SERVER_PATH);
+                        });
+                    },
+                    yes:function (index, layero) {
+                        $.ajax({
+                            url:'/rv-manage/update',
+                            data:{
+                                id: data.ID,
+                                appName:$("#addAppName").val(),
+                                mappingPath:$("#addMappingPath").val().trim(),
+                                serverPath:$("#addServerPath").val().trim()
+                            },
+                            success:function (res) {
+                                if(res.code === '0'){
+                                    layer.close(index);
+                                }
+                            }
+                        });
+
+                    },
+                    end: function(){loadTable();}
+                });
             } else if(layEvent === 'del'){
                 layer.confirm('真的删除该数据吗？', function(index){
                     // 向服务端发送删除指令
@@ -186,6 +220,9 @@
                 success:function(layero, index) {
                     layui.use(function() {
                         layui.form.render('select');
+                        $("#addAppName").val();
+                        $("#addMappingPath").val();
+                        $("#addServerPath").val();
                     });
                 },
                 yes:function (index, layero) {

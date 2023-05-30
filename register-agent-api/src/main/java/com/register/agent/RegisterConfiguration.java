@@ -7,6 +7,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
+import java.net.Inet4Address;
+import java.net.UnknownHostException;
+
 @ConditionalOnProperty("register.agent.appName")
 @ComponentScan("com.register.agent")
 public class RegisterConfiguration {
@@ -21,12 +24,12 @@ public class RegisterConfiguration {
 
 
     @Bean
-    public RegisterAgentInfo registerAgentInfo(){
+    public RegisterAgentInfo registerAgentInfo() throws UnknownHostException {
         RegisterAgentInfo agentInfo = new RegisterAgentInfo();
         agentInfo.setReqId(AGENT_CLIENT_ID);
         agentInfo.setAppName(appName);
         agentInfo.setPath("/");
-//TODO 添加ip
+        agentInfo.setRegisterIp(Inet4Address.getLocalHost().getHostAddress());
         agentInfo.setServerHost(serverHost);
         return agentInfo;
     }

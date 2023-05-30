@@ -1,5 +1,7 @@
 package com.register.server.web.controller;
 
+import com.google.common.collect.Lists;
+import com.register.agent.req.RegisterAgentInfo;
 import com.register.server.core.RegisterAgentFactory;
 import com.register.server.web.domain.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -34,16 +36,26 @@ public class ManageController {
 
     @ResponseBody
     @RequestMapping("getRegisterAgentInfo")
-    public Result getRegisterAgentInfo(String appName){
-
-
-
-
-//        List<Map<String, Object>>
-//        registerAgentListMap
-
-//        return RegisterAgentFactory.getAppNameSet();
-        return null;
+    public Result getRegisterAgentInfo(String appName,
+                                       @RequestParam(required = false, defaultValue = "1") int page,
+                                       @RequestParam(required = false, defaultValue = "10") int limit){
+        Map<String, List<RegisterAgentInfo>> map = RegisterAgentFactory.getRegisterAgentListMap();
+        List<RegisterAgentInfo> result;
+        if(StringUtils.isNotBlank(appName)){
+            result = map.get(appName);
+        }else{
+            result = map.values()
+                    .stream().reduce((one, next) -> {
+                        one.addAll(next);
+                        return one;
+                    }).orElseGet(ArrayList::new);
+        }
+        int startIndex = (page - 1) * limit;
+        int endIndex = page * limit;
+        if(result.size() <= startIndex){
+            return Result.ok();
+        }
+        return Result.ok(Lists.newArrayList(result.subList(startIndex, Math.min(endIndex, result.size()))));
     }
 
 
@@ -73,9 +85,9 @@ public class ManageController {
     }
     @ResponseBody
     @RequestMapping("update")
-    public Result update(int id, String appName, String mappingPath){
-        return Result.ok(jdbcTemplate.update("UPDATE t_appname_path set app_name = ?, mappingPath = ? where id = ?",
-                appName, mappingPath, id));
+    public Result update(int id, String appName, String mappingPath, String serverPath){
+        return Result.ok(jdbcTemplate.update("UPDATE t_appname_path set app_name = ?, mapping_path = ?, server_path = ? where id = ?",
+                appName, mappingPath, serverPath, id));
     }
     @ResponseBody
     @RequestMapping("select")
@@ -93,7 +105,8 @@ public class ManageController {
 
         List<Map<String, Object>> res = new ArrayList<>();
         if(count != 0){
-            res = jdbcTemplate.queryForList(sql);
+            int offset = (page -1) * limit;
+            res = jdbcTemplate.queryForList(sql + " order by id desc limit " + offset + "," + limit );
         }
         return Result.okPage(count, res);
     }

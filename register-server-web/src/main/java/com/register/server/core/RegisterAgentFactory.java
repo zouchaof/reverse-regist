@@ -13,13 +13,17 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class RegisterAgentFactory {
 
-    private static final LocalDateTime DEFAULT_TIME = LocalDateTime.of(2020,1,1,0,0);
     /**
      * 执行节点各种策略待定
      */
     private static Map<String, List<RegisterAgentInfo>> registerAgentListMap = new ConcurrentHashMap<>();
 
     private static Map<String, String> contextAppNameMap = new ConcurrentHashMap<>();
+
+
+    public static Map<String, List<RegisterAgentInfo>> getRegisterAgentListMap() {
+        return registerAgentListMap;
+    }
 
     public static Set<String> getAppNameSet(){
         return registerAgentListMap.keySet();
@@ -49,7 +53,6 @@ public class RegisterAgentFactory {
             }
         }else{
             List<RegisterAgentInfo> registerAgentInfoList = new ArrayList<>();
-            registerAgentInfo.setLastUseTime(DEFAULT_TIME);
             registerAgentInfoList.add(registerAgentInfo);
             registerAgentListMap.put(appName, registerAgentInfoList);
         }
@@ -74,6 +77,12 @@ public class RegisterAgentFactory {
         List<RegisterAgentInfo> registerAgentInfoList = registerAgentListMap.get(appName);
         registerAgentInfoList.removeIf(item -> halfHourAgo.isAfter(item.getLastRegisterTime()));
         return registerAgentInfoList.stream().reduce((one, next) -> {
+                    if(one.getLastUseTime() == null){
+                        return one;
+                    }
+                    if(next.getLastUseTime() == null){
+                        return next;
+                    }
                     if(one.getLastUseTime().isBefore(next.getLastUseTime())){
                         return one;
                     }

@@ -1,5 +1,6 @@
 package com.register.agent.req;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,12 +18,14 @@ public class RegisterAgentInfo extends BaseMessage {
 
     private String serverHost;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastRegisterTime;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime lastUseTime;
 
     private ChannelHandlerContext ctx;
 
-    private List<String> registerIpList;
+    private String registerIp;
 
 }

@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class RequestHandler {
             // 执行具体的写操作
             agentInfo.getCtx().writeAndFlush(innerRequest);
         });
-
+        agentInfo.setLastUseTime(LocalDateTime.now());
         return innerRequest;
 
     }
