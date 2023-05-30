@@ -46,6 +46,7 @@ public class RegisterAgentFactory {
             for(RegisterAgentInfo info : registerAgentInfoList){
                 if(info.getReqId() == registerAgentInfo.getReqId()){
                     info.setLastRegisterTime(registerAgentInfo.getLastRegisterTime());
+                    info.setCtx(registerAgentInfo.getCtx());
                     hasRegister = true;
                 }
             }

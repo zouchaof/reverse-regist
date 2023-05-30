@@ -244,6 +244,25 @@
             });
         });
 
+        var ws = new WebSocket('ws://localhost:80/rv-websocket');
+
+        ws.onopen = function(event) {
+            console.log('WebSocket 连接已建立');
+            ws.send('Hello, WebSocket!');
+        };
+
+        ws.onmessage = function(event) {
+            console.log('收到 WebSocket 消息：' + event.data);
+        };
+
+        ws.onerror = function(event) {
+            console.error('WebSocket 连接错误：' + event);
+        };
+
+        ws.onclose = function(event) {
+            console.log('WebSocket 连接已关闭');
+        };
+
 
     });
 </script>
