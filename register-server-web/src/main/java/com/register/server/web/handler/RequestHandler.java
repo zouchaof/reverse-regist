@@ -30,6 +30,7 @@ public class RequestHandler {
         if(agentInfo == null){
             throw new RuntimeException("暂无注册节点");
         }
+        agentInfo.setLastUseTime(LocalDateTime.now());
         //转换为内部请求参数
         InnerRequest innerRequest = getInnerRequest(request, agentInfo, appInfo);
         //发起请求,多线程直接写数据会混乱，用线程池写
@@ -37,7 +38,6 @@ public class RequestHandler {
             // 执行具体的写操作
             agentInfo.getCtx().writeAndFlush(innerRequest);
         });
-        agentInfo.setLastUseTime(LocalDateTime.now());
         return innerRequest;
 
     }

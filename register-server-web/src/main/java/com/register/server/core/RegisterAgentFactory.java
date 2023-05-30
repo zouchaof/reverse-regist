@@ -35,6 +35,7 @@ public class RegisterAgentFactory {
         if(registerAgentInfo == null || StringUtils.isEmpty(registerAgentInfo.getAppName())){
             return;
         }
+        registerAgentInfo.setLastRegisterTime(LocalDateTime.now());
         registerAgentInfo.setCtx(ctx);
 
         String appName = registerAgentInfo.getAppName();
