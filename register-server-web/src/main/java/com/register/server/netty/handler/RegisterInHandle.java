@@ -14,12 +14,23 @@ public class RegisterInHandle extends ServerInHandleAdapter<RegisterAgentInfo> {
     }
 
 
+    /**
+     * 链接异常时触发
+     * @param ctx
+     * @param cause
+     * @throws Exception
+     */
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         RegisterAgentFactory.removeRegisterAgent(ctx);
         super.exceptionCaught(ctx, cause);
     }
 
+    /**
+     * 失去链接时触发
+     * @param ctx
+     * @throws Exception
+     */
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         RegisterAgentFactory.removeRegisterAgent(ctx);

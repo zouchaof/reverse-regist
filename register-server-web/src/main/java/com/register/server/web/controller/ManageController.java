@@ -73,19 +73,24 @@ public class ManageController {
 
     @ResponseBody
     @RequestMapping("add")
-    public Result add(String appName, String mappingPath, String serverPath){
+    public Result add(@RequestParam String appName, @RequestParam String mappingPath, String serverPath){
+        if(!mappingPath.startsWith("/")){
+            mappingPath = "/" + mappingPath;
+        }
         return Result.ok(jdbcTemplate.update(
                 "INSERT INTO t_appname_path(app_name, mapping_path, server_path, create_time) VALUES (?, ?, ?, now())",
                 appName, mappingPath, serverPath));
     }
     @ResponseBody
     @RequestMapping("delete")
-    public Result delete(int id){
+    public Result delete(@RequestParam Integer id){
         return Result.ok(jdbcTemplate.update("DELETE FROM t_appname_path where id = ?", id));
     }
     @ResponseBody
     @RequestMapping("update")
-    public Result update(int id, String appName, String mappingPath, String serverPath){
+    public Result update(@RequestParam Integer id,
+                         @RequestParam String appName,
+                         @RequestParam String mappingPath, String serverPath){
         return Result.ok(jdbcTemplate.update("UPDATE t_appname_path set app_name = ?, mapping_path = ?, server_path = ? where id = ?",
                 appName, mappingPath, serverPath, id));
     }
@@ -99,7 +104,7 @@ public class ManageController {
             sql += " and app_name = '" + appName + "'";
         }
         if(StringUtils.isNotBlank(mappingPath)){
-            sql += " and mapping_path = '" + mappingPath + "'";
+            sql += " and mapping_path like '%" + mappingPath + "%'";
         }
         Integer count  = jdbcTemplate.queryForObject("select count(*) from (" + sql + ")", Integer.class);
 
