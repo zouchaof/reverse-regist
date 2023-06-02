@@ -3,9 +3,11 @@ package com.register.agent.handler;
 import com.register.agent.core.AgentClientMain;
 import com.register.agent.req.InnerRequest;
 import com.register.agent.req.InnerResponse;
+import com.register.agent.req.InnerResponseV2;
 import com.register.agent.req.RegisterAgentInfo;
 import com.register.agent.spring.SpringApplicationContextHolder;
 import com.register.agent.utils.HttpRequestUtil;
+import com.register.agent.utils.HttpRequestUtilV2;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -35,21 +37,26 @@ public class AgentInHandle extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         InnerRequest request = (InnerRequest)msg;
-        InnerResponse response = new InnerResponse();
-        response.setReqId(request.getReqId());
         //读数据绑定单线程，所以真实解析数据返回使用多线程提升性能
         executor.execute(() -> {
-            execRequest(request, response);
+            Object obj = execRequest(request);
             //保证数据不错乱，提交netty线程任务来写数据
             ctx.executor().execute(()->{
-                ctx.writeAndFlush(response);
+                ctx.writeAndFlush(obj);
             });
         });
     }
 
-    private void execRequest(InnerRequest request, InnerResponse response) {
+    private Object execRequest(InnerRequest request) {
         //第一版，直接http转
-        response.setContent(HttpRequestUtil.invokeRequest(request));
+//        InnerResponse response = new InnerResponse();
+//        response.setReqId(request.getReqId());
+//        response.setContent(HttpRequestUtil.invokeRequest(request));
+        //第二版，http，跟随状态的
+        InnerResponseV2 response = new InnerResponseV2();
+        response.setReqId(request.getReqId());
+        HttpRequestUtilV2.invokeRequest(request, response);
+        return response;
     }
 
     //客户端连接成功后，向服务器发送数据

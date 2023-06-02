@@ -1,6 +1,7 @@
 package com.register.server.core;
 
 import com.register.server.netty.handler.ContextInHandle;
+import com.register.server.netty.handler.ContextInHandleV2;
 import com.register.server.netty.handler.RegisterInHandle;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -45,6 +46,7 @@ public class RegisterServerStrap {
                     ch.pipeline().addLast(new ObjectDecoder(Integer.MAX_VALUE, ClassResolvers.cacheDisabled(null)));
                     ch.pipeline().addLast(new RegisterInHandle());
                     ch.pipeline().addLast(new ContextInHandle());
+                    ch.pipeline().addLast(new ContextInHandleV2());
                 }
             }).bind(registerServerPort);
     }

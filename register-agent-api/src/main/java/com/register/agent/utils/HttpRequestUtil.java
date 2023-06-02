@@ -125,18 +125,6 @@ public class HttpRequestUtil {
                     html = httpEntity2String(httpEntity, charset);
                 }
                 httpPost.abort();
-            }else if (statusCode == HttpStatus.SC_MOVED_TEMPORARILY || statusCode == HttpStatus.SC_MOVED_PERMANENTLY
-                    || statusCode == HttpStatus.SC_SEE_OTHER || statusCode == HttpStatus.SC_TEMPORARY_REDIRECT) {
-                log.info("--------HttpStatus:"+statusCode);
-                Header header = httpResponse.getFirstHeader("location");
-                if (header == null) {
-                    return html;
-                }
-                String newuri = header.getValue();
-                if ((newuri == null) || (newuri.equals(""))) {
-                    newuri = "/";
-                }
-                return urlEdit(url, newuri);
             }else{
                 String msg = "访问失败！！HTTP_STATUS=" + statusCode;
                 throw new HttpException(msg);

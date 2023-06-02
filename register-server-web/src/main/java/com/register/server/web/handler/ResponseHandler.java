@@ -2,6 +2,7 @@ package com.register.server.web.handler;
 
 import com.register.agent.req.InnerRequest;
 import com.register.agent.req.InnerResponse;
+import com.register.agent.req.InnerResponseV2;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,6 +35,15 @@ public class ResponseHandler {
 
 
     public static void handleResponse(InnerResponse response){
+        SkInnerRequest skRequest = listenMap.get(response.getReqId());
+        if(skRequest == null){
+            return;
+        }
+        skRequest.setResponse(response);
+        skRequest.getLatch().countDown();
+    }
+
+    public static void handleResponse(InnerResponseV2 response){
         SkInnerRequest skRequest = listenMap.get(response.getReqId());
         if(skRequest == null){
             return;
