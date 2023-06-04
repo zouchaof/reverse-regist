@@ -80,7 +80,7 @@ public class TestController {
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public void testMethod(HttpServletRequest request, HttpServletResponse response) {
-        String targetUrl = "http://localhost:81/agent/timerR";
+        String targetUrl = "https://www.baidu.com/s?wd=1";
         HttpGet httpGet = new HttpGet(targetUrl);
         httpGet.setConfig(RequestConfig.custom().setRedirectsEnabled(false).build());
         CloseableHttpClient httpClient = HttpClients.createDefault();

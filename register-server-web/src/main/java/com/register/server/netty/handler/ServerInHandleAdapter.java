@@ -1,6 +1,7 @@
 package com.register.server.netty.handler;
 
 import com.alibaba.fastjson.JSONObject;
+import com.register.agent.req.BaseMessage;
 import com.register.agent.req.InnerRequest;
 import com.register.agent.req.InnerResponse;
 import io.netty.channel.ChannelHandlerContext;
@@ -9,6 +10,8 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
@@ -46,5 +49,6 @@ public abstract class ServerInHandleAdapter<T> extends ChannelInboundHandlerAdap
         return obj.getClass().isAssignableFrom(c);
     }
 
+    public abstract void reverserResponse(InnerRequest request, T msg, HttpServletResponse response) throws IOException;
 
 }

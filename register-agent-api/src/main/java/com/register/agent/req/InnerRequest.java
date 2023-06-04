@@ -19,4 +19,8 @@ public class InnerRequest extends BaseMessage {
 
     private String jsonParam;
 
+    private String originHost;
+
+    private String serverHost;
+
 }

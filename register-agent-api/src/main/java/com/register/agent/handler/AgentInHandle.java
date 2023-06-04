@@ -56,6 +56,7 @@ public class AgentInHandle extends ChannelInboundHandlerAdapter {
         InnerResponseV2 response = new InnerResponseV2();
         response.setReqId(request.getReqId());
         HttpRequestUtilV2.invokeRequest(request, response);
+
         return response;
     }
 

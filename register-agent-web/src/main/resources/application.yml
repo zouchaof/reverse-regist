@@ -4,7 +4,7 @@ server:
     context-path: /agent
 register:
   server:
-    host: 54.199.255.22
+#    host: 54.199.255.22
     port: 19090
   agent:
     appName: agent

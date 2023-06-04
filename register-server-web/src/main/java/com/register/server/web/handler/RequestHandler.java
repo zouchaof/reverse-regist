@@ -45,11 +45,12 @@ public class RequestHandler {
     private static InnerRequest getInnerRequest(HttpServletRequest request, RegisterAgentInfo agentInfo, Map<String, Object> appInfo) {
         InnerRequest innerRequest = new InnerRequest();
         innerRequest.setReqId(IdWork.getId());
-
+        innerRequest.setOriginHost(String.format("%s://%s:%s", request.getScheme(), request.getServerName(), request.getServerPort()));
         String serverPath = (String) appInfo.get("SERVER_PATH");
         if(StringUtils.isBlank(serverPath)){
             serverPath = agentInfo.getServerHost();
         }
+        innerRequest.setServerHost(serverPath);
         innerRequest.setUrl(serverPath + request.getRequestURI());
         innerRequest.setMethod(request.getMethod());
         innerRequest.setHeadMap(getHeadMap(request));

@@ -11,6 +11,7 @@ public class InnerResponseV2 extends BaseMessage {
 
     private Map<String, String> headerMap;
 
-    private byte[] outBytes;
+    private String content;
+//    private byte[] outBytes;
 
 }

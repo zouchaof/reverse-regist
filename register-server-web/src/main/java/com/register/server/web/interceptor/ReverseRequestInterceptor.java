@@ -28,14 +28,15 @@ public class ReverseRequestInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         try{
             InnerRequest innerRequest = RequestHandler.invokeRequest(request, this.getAppMappingInfo(request));
-            InnerResponse innerResponse = ResponseHandler.getResponse(innerRequest);
-            String result = innerResponse == null ? "{\"code\":\"-1\",\"msg\":\"异常结果\"}" : innerResponse.getContent();
-            response.setContentType("text/html;charset=utf-8");
-            response.getWriter().write(result);
+//            InnerResponse innerResponse =
+            ResponseHandler.parseResponse(innerRequest, response);
+//            String result = innerResponse == null ? "{\"code\":\"-1\",\"msg\":\"异常结果\"}" : innerResponse.getContent();
+//            response.setContentType("text/html;charset=utf-8");
+//            response.getWriter().write(result);
         }catch (Exception e){
             log.error("invoke error", e);
             response.setContentType("text/html;charset=utf-8");
-            response.getWriter().write("{\"code\":\"-1\",\"msg\":\"异常结果\"}");
+            response.getWriter().write("{\"code\":\"-1\",\"msg\":\"未知异常结果\"}");
         }
         return false;
     }

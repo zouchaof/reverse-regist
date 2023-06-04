@@ -1,15 +1,20 @@
 package com.register.server.web.handler;
 
+import com.register.agent.req.BaseMessage;
 import com.register.agent.req.InnerRequest;
 import com.register.agent.req.InnerResponse;
 import com.register.agent.req.InnerResponseV2;
+import com.register.server.netty.handler.ServerInHandleAdapter;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 
 @Slf4j
 public class ResponseHandler {
@@ -34,41 +39,34 @@ public class ResponseHandler {
     }
 
 
-    public static void handleResponse(InnerResponse response){
-        SkInnerRequest skRequest = listenMap.get(response.getReqId());
+    public static void handleResponse(BaseMessage msg,
+                                      ServerInHandleAdapter adapter){
+        SkInnerRequest skRequest = listenMap.get(msg.getReqId());
         if(skRequest == null){
             return;
         }
-        skRequest.setResponse(response);
-        skRequest.getLatch().countDown();
-    }
-
-    public static void handleResponse(InnerResponseV2 response){
-        SkInnerRequest skRequest = listenMap.get(response.getReqId());
-        if(skRequest == null){
-            return;
-        }
-        skRequest.setResponse(response);
+        skRequest.setHandleAdapter(adapter);
+        skRequest.setMsg(msg);
         skRequest.getLatch().countDown();
     }
 
 
-    public static InnerResponse getResponse(InnerRequest request){
+    public static void parseResponse(InnerRequest request, HttpServletResponse response) throws IOException {
         addListen(request);
         SkInnerRequest skRequest = listenMap.get(request.getReqId());
         if(skRequest == null){
-            return null;
+            return;
         }
-        InnerResponse response = skRequest.getResponse();
+        skRequest.getHandleAdapter().reverserResponse(skRequest.getRequest(), skRequest.getMsg(), response);
         listenMap.remove(request.getReqId());
-        return response;
     }
 
     @Data
     private class SkInnerRequest{
         private InnerRequest request;
-        private InnerResponse response;
+        private BaseMessage msg;
         private CountDownLatch latch = new CountDownLatch(1);
+        private ServerInHandleAdapter handleAdapter;
     }
 
 

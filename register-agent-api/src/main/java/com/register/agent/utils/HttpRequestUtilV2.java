@@ -196,8 +196,10 @@ public class HttpRequestUtilV2 {
         for (Header header : httpResponse.getAllHeaders()) {
             headerMap.put(header.getName(), header.getValue());
         }
+        innerRespone.setHeaderMap(headerMap);
         HttpEntity entity = httpResponse.getEntity();
-        innerRespone.setOutBytes(EntityUtils.toByteArray(entity));
+//        innerRespone.setOutBytes(EntityUtils.toByteArray(entity));
+        innerRespone.setContent(EntityUtils.toString(entity));
     }
 
     public static void invokeRequest(InnerRequest request, InnerResponseV2 respone) {
@@ -206,6 +208,8 @@ public class HttpRequestUtilV2 {
         }
         Map<String, String> headMap = request.getHeadMap();
         headMap.remove("host");
+        headMap.remove("Host");
+//        headMap.put("Host", request.getServerHost());
         //先只支持get,post，其他的都发post
         if(request.getMethod().equalsIgnoreCase("GET")){
             getMethod(respone, request.getUrl(), request.getParamsMap(), headMap);
