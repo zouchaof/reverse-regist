@@ -28,7 +28,6 @@ public class ReverseRequestInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         try{
             InnerRequest innerRequest = RequestHandler.invokeRequest(request, this.getAppMappingInfo(request));
-//            InnerResponse innerResponse =
             ResponseHandler.parseResponse(innerRequest, response);
 //            String result = innerResponse == null ? "{\"code\":\"-1\",\"msg\":\"异常结果\"}" : innerResponse.getContent();
 //            response.setContentType("text/html;charset=utf-8");

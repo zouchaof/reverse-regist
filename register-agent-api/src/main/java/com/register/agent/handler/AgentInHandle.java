@@ -52,7 +52,8 @@ public class AgentInHandle extends ChannelInboundHandlerAdapter {
 //        InnerResponse response = new InnerResponse();
 //        response.setReqId(request.getReqId());
 //        response.setContent(HttpRequestUtil.invokeRequest(request));
-        //第二版，http，跟随状态的
+
+        //第二版，http，跟随状态的(实现跳转时，很多网站做了跨域验证，有时候跳不过去)
         InnerResponseV2 response = new InnerResponseV2();
         response.setReqId(request.getReqId());
         HttpRequestUtilV2.invokeRequest(request, response);

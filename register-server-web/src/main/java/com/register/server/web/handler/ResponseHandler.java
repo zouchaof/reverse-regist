@@ -4,6 +4,7 @@ import com.register.agent.req.BaseMessage;
 import com.register.agent.req.InnerRequest;
 import com.register.agent.req.InnerResponse;
 import com.register.agent.req.InnerResponseV2;
+import com.register.server.core.ReverserResponseHandler;
 import com.register.server.netty.handler.ServerInHandleAdapter;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import java.util.function.BiConsumer;
 public class ResponseHandler {
 
 
-    private static final Map<Long, SkInnerRequest> listenMap = new ConcurrentHashMap<>();
+    private static final Map<String, SkInnerRequest> listenMap = new ConcurrentHashMap<>();
     private static int reqTimeout = 30;
     private static ResponseHandler handler;
 
@@ -40,7 +41,7 @@ public class ResponseHandler {
 
 
     public static void handleResponse(BaseMessage msg,
-                                      ServerInHandleAdapter adapter){
+                                      ReverserResponseHandler adapter){
         SkInnerRequest skRequest = listenMap.get(msg.getReqId());
         if(skRequest == null){
             return;
@@ -66,7 +67,7 @@ public class ResponseHandler {
         private InnerRequest request;
         private BaseMessage msg;
         private CountDownLatch latch = new CountDownLatch(1);
-        private ServerInHandleAdapter handleAdapter;
+        private ReverserResponseHandler handleAdapter;
     }
 
 

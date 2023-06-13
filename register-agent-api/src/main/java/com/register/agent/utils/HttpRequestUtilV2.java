@@ -1,5 +1,6 @@
 package com.register.agent.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.register.agent.req.InnerRequest;
 import com.register.agent.req.InnerResponseV2;
 import org.apache.commons.lang3.StringUtils;
@@ -198,8 +199,11 @@ public class HttpRequestUtilV2 {
         }
         innerRespone.setHeaderMap(headerMap);
         HttpEntity entity = httpResponse.getEntity();
-//        innerRespone.setOutBytes(EntityUtils.toByteArray(entity));
-        innerRespone.setContent(EntityUtils.toString(entity));
+        try{
+            innerRespone.setContent(EntityUtils.toString(entity, DEFAULT_CHARSET));
+        }catch (Exception e){
+            log.error("entity toString error", e);
+        }
     }
 
     public static void invokeRequest(InnerRequest request, InnerResponseV2 respone) {
@@ -209,8 +213,11 @@ public class HttpRequestUtilV2 {
         Map<String, String> headMap = request.getHeadMap();
         headMap.remove("host");
         headMap.remove("Host");
+        headMap.remove("if-none-match");
+        headMap.remove("if-modified-since");
 //        headMap.put("Host", request.getServerHost());
         //先只支持get,post，其他的都发post
+        System.out.println(JSONObject.toJSONString(headMap));
         if(request.getMethod().equalsIgnoreCase("GET")){
             getMethod(respone, request.getUrl(), request.getParamsMap(), headMap);
         }

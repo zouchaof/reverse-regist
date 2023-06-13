@@ -98,6 +98,7 @@
     </form>
 </script>
 <script>
+    var ws = new WebSocket('ws://localhost:80/rv-websocket');
     layui.use(function(){
         var layer = layui.layer;
         var table = layui.table;
@@ -244,15 +245,30 @@
             });
         });
 
-        var ws = new WebSocket('ws://localhost:80/rv-websocket');
+
 
         ws.onopen = function(event) {
             console.log('WebSocket 连接已建立');
-            ws.send('Hello, WebSocket!');
+            // ws.send('Hello, WebSocket!');
+            var param = {
+                registerType:'browser',
+                appName:'brow',
+                path:'/',
+                registerIp:'127.0.0.1',
+                serverHost:'localhost:81',
+                reqId:'-1'
+            }
+            ws.send(JSON.stringify(param));
         };
 
         ws.onmessage = function(event) {
             console.log('收到 WebSocket 消息：' + event.data);
+
+            var res = {
+                reqId: JSON.parse(event.data).reqId,
+                content: 'Hello, WebSocket!'
+            }
+            ws.send(JSON.stringify(res));
         };
 
         ws.onerror = function(event) {

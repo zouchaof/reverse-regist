@@ -34,10 +34,11 @@ public class RequestHandler {
         //转换为内部请求参数
         InnerRequest innerRequest = getInnerRequest(request, agentInfo, appInfo);
         //发起请求,多线程直接写数据会混乱，用线程池写
-        agentInfo.getCtx().executor().submit(() -> {
-            // 执行具体的写操作
-            agentInfo.getCtx().writeAndFlush(innerRequest);
-        });
+        RegisterAgentFactory.writeData(agentInfo, innerRequest);
+//        agentInfo.getCtx().executor().submit(() -> {
+//            // 执行具体的写操作
+//            agentInfo.getCtx().writeAndFlush(innerRequest);
+//        });
         return innerRequest;
 
     }

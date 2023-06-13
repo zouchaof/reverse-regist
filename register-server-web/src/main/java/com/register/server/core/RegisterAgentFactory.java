@@ -5,7 +5,10 @@ import com.register.agent.req.RegisterAgentInfo;
 import io.netty.channel.ChannelHandlerContext;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.StringUtils;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -29,7 +32,7 @@ public class RegisterAgentFactory {
         return registerAgentListMap.keySet();
     }
 
-    public static void registerAgent(ChannelHandlerContext ctx, RegisterAgentInfo registerAgentInfo){
+    public static void registerAgent(Object ctx, RegisterAgentInfo registerAgentInfo){
 
         log.info("注册客户端信息：{}", JSONObject.toJSONString(registerAgentInfo));
         if(registerAgentInfo == null || StringUtils.isEmpty(registerAgentInfo.getAppName())){
@@ -44,7 +47,7 @@ public class RegisterAgentFactory {
             List<RegisterAgentInfo> registerAgentInfoList = registerAgentListMap.get(appName);
             boolean hasRegister = false;
             for(RegisterAgentInfo info : registerAgentInfoList){
-                if(info.getReqId() == registerAgentInfo.getReqId()){
+                if(info.getReqId().equals(registerAgentInfo.getReqId())){
                     info.setLastRegisterTime(registerAgentInfo.getLastRegisterTime());
                     info.setCtx(registerAgentInfo.getCtx());
                     hasRegister = true;
@@ -60,7 +63,7 @@ public class RegisterAgentFactory {
         }
     }
 
-    public static void removeRegisterAgent(ChannelHandlerContext ctx){
+    public static void removeRegisterAgent(Object ctx){
         if(!contextAppNameMap.containsKey(ctx.toString())){
             return;
         }
@@ -92,5 +95,22 @@ public class RegisterAgentFactory {
                 }).get();
     }
 
+    public static void writeData(RegisterAgentInfo agentInfo, Object reqData) {
+        if("ctx".equals(agentInfo.getRegisterType())){
+            ChannelHandlerContext ctx = (ChannelHandlerContext)agentInfo.getCtx();
+            ctx.executor().submit(() -> {
+                // 执行具体的写操作
+                ctx.writeAndFlush(reqData);
+            });
+        }
+        if("browser".equals(agentInfo.getRegisterType())){
+            try {
+                WebSocketSession session = (WebSocketSession)agentInfo.getCtx();
+                session.sendMessage(new TextMessage(JSONObject.toJSONString(reqData)));
+            } catch (IOException e) {
+                log.error("浏览器消息写入异常", e);
+            }
+        }
+    }
 
 }

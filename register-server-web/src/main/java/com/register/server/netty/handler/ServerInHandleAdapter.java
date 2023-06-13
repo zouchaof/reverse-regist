@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.register.agent.req.BaseMessage;
 import com.register.agent.req.InnerRequest;
 import com.register.agent.req.InnerResponse;
+import com.register.server.core.ReverserResponseHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -16,7 +17,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 @Slf4j
-public abstract class ServerInHandleAdapter<T> extends ChannelInboundHandlerAdapter {
+public abstract class ServerInHandleAdapter<T> extends ChannelInboundHandlerAdapter implements ReverserResponseHandler<T> {
 
     /**
      * Calls {@link ChannelHandlerContext#fireChannelRead(Object)} to forward
@@ -49,6 +50,5 @@ public abstract class ServerInHandleAdapter<T> extends ChannelInboundHandlerAdap
         return obj.getClass().isAssignableFrom(c);
     }
 
-    public abstract void reverserResponse(InnerRequest request, T msg, HttpServletResponse response) throws IOException;
 
 }

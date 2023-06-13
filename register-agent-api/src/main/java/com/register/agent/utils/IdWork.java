@@ -5,8 +5,8 @@ public class IdWork {
     private static Snowflake snowflake = new Snowflake();
 
 
-    public static long getId(){
-        return snowflake.nextId();
+    public static String getId(){
+        return String.valueOf(snowflake.nextId());
     }
 
 }

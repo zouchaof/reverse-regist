@@ -14,7 +14,7 @@ import java.net.UnknownHostException;
 @ComponentScan("com.register.agent")
 public class RegisterConfiguration {
 
-    private static final long AGENT_CLIENT_ID = IdWork.getId();
+    private static final String AGENT_CLIENT_ID = IdWork.getId();
 
     @Value("${register.agent.appName}")
     private String appName;
@@ -31,6 +31,7 @@ public class RegisterConfiguration {
         agentInfo.setPath("/");
         agentInfo.setRegisterIp(Inet4Address.getLocalHost().getHostAddress());
         agentInfo.setServerHost(serverHost);
+        agentInfo.setRegisterType("ctx");
         return agentInfo;
     }
 
